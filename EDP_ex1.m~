@@ -1,0 +1,48 @@
+clear all;
+close all;
+
+
+%intervalle spatial
+h=0.05;
+xmin=0;
+L=1;
+x=[xmin:h:L]';
+n=length(x);
+
+
+%intervalle temporel
+tmin=0;
+tmax=0.13;
+tau=0.00124;
+t=tmin:tau:tmax;
+m=length(t);
+%
+r=tau/(h.^2);
+
+%fonction a t=0
+g=@(x)(1-abs((2*x)-1));
+F=g(x);
+%%conditions aux limites
+F(1)=0;
+F(n)=0;
+
+figure(1);
+plot(x,g(x));
+hold on;
+
+%Matrice tri-diagonale M
+M=diag((1-2*r)*ones(1,n)) + diag(r*ones(1,n-1),1) + diag(r*ones(1,n-1),-1);
+
+
+for i=1:5:m
+
+    F=M * F;%equation de la chaleur 
+    F(n)=0;
+    F(1)=0;
+    
+    if(mod(i,2)~=0)%pour prendre que les cas impaires
+        plot(x,F);
+
+        pause(0.5);
+    end
+end
